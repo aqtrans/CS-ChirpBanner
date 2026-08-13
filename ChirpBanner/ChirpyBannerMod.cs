@@ -185,6 +185,10 @@ namespace ChirpBanner
 			if (BannerPanel.hasChirps) {
 				bool bPopIt = false;
 				float currentTrailingEdge = 20;
+		        // Move calculations that don't change per-item out of the loop
+		        float moveAmount = simulationTimeDelta * MyConfig.ConfigHolder.Config.ScrollSpeed;
+
+
 				foreach (BannerLabelStruct bls in ChirpyBanner.theBannerPanel.BannerLabelsQ) {
 
 					//DebugOutputPanel.AddMessage(ColossalFramework.Plugins.PluginManager.MessageType.Message, string.Format("chirp y position: {0}", bls.Label.relativePosition.y));
@@ -192,7 +196,9 @@ namespace ChirpBanner
 					//DebugOutputPanel.AddMessage(ColossalFramework.Plugins.PluginManager.MessageType.Message, string.Format("chirp width: {0}", bls.Label.width));
 
 					if (bls.IsCurrentlyVisible) {
-						bls.Label.relativePosition = new Vector3 (bls.Label.relativePosition.x - simulationTimeDelta * MyConfig.ConfigHolder.Config.ScrollSpeed, bls.Label.relativePosition.y, bls.Label.relativePosition.z);
+						var pos = bls.Label.relativePosition;
+						pos.x -= moveAmount;
+						bls.Label.relativePosition = pos;
 						bls.RelativePosition = bls.Label.relativePosition;
 
 						//DebugOutputPanel.AddMessage(ColossalFramework.Plugins.PluginManager.MessageType.Message, string.Format("bls.Label.width: {0}", bls.Label.width));
