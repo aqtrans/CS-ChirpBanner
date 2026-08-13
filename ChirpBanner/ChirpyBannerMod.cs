@@ -10,7 +10,6 @@ using ColossalFramework;
 using ColossalFramework.Threading;
 using ColossalFramework.UI;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace ChirpBanner
 {
@@ -50,7 +49,7 @@ namespace ChirpBanner
 			colors.AddTextfield ("Name Color", MyConfig.ConfigHolder.Config.NameColor, CheckChirpNameColor, CheckChirpNameColor);
 			colors.AddTextfield ("Chirp Color", MyConfig.ConfigHolder.Config.MessageColor, CheckChirpMsgColor, CheckChirpMsgColor);
 
-			UIHelperBase version = helper.AddGroup ("v2.5.0");
+			UIHelperBase version = helper.AddGroup ("v2.6.0");
 
 			//group.AddSlider("My Slider", 0, 1, 0.01f, 0.5f, EventSlide);
 			//group.AddDropdown("My Dropdown", new string[] { "First Entry", "Second Entry", "Third Entry" }, -1, EventSel);
@@ -393,7 +392,7 @@ namespace ChirpBanner
 					}
 				}
 
-				string str = String.Format ("<color{0}>{1}</color> : <color{2}>{3}</color>", nameColorTag, message.senderName, textColorTag, message.text);
+				string str = String.Format ("<color={0}>{1}</color> : <color={2}>{3}</color>", nameColorTag, message.senderName, textColorTag, message.text);
 
 				// Check for CurrentConfig.FilterChirps
 				if (MyConfig.ConfigHolder.Config.FilterChirps) {
@@ -530,7 +529,7 @@ namespace ChirpBanner
 			//this.CenterToParent();
 			//this.position = new Vector3 ((-viewWidth / 2) + banner_inset, (viewHeight / 2));
 			this.opacity = MyConfig.ConfigHolder.Config.BackgroundAlpha;
-			this.width = (viewWidth/2);
+			this.width = viewWidth;
 			//this.width = (viewWidth * MyConfig.ConfigHolder.Config.BannerWidth) - (banner_inset * 2);
 			this.maximumSize = new Vector2(viewWidth, 25f);
 			this.minimumSize = new Vector2(27f, 25f);
@@ -595,7 +594,7 @@ namespace ChirpBanner
 				ChirpLabel.textAlignment = UIHorizontalAlignment.Left;
 				ChirpLabel.relativePosition = new Vector3 ((this.width), 0);
 				//ChirpLabel.height = (float)ChirpyBanner.CurrentConfig.TextSize;
-				ChirpLabel.height = 10.0f;
+				ChirpLabel.height = 30.0f;
 				ChirpLabel.padding = new RectOffset (0, 0, 2, 2);
 
 				ChirpLabel.textScaleMode = UITextScaleMode.None;
@@ -610,12 +609,12 @@ namespace ChirpBanner
 				};
 
 				ChirpLabel.eventClick += (UIComponent comp, UIMouseEventParameter p) => {
-					if (!((UnityEngine.Object)p.source != (UnityEngine.Object)null) || !((UnityEngine.Object)ToolsModifierControl.cameraController != (UnityEngine.Object)null))
+					if (p.source == null || ToolsModifierControl.cameraController == null)
 						return;
 					InstanceID id = (InstanceID)p.source.objectUserData;
-					if (!InstanceManager.IsValid (id))
+					if (!InstanceManager.IsValid(id))
 						return;
-					ToolsModifierControl.cameraController.SetTarget (id, ToolsModifierControl.cameraController.transform.position, true); 
+					ToolsModifierControl.cameraController.SetTarget(id, ToolsModifierControl.cameraController.transform.position, true); 
 				};
 
 				BannerLabelStruct bls = new BannerLabelStruct ();
