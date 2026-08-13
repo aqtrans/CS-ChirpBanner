@@ -524,12 +524,12 @@ namespace ChirpBanner
 			this.height = 25.0f;
 			//this.height = (float)ChirpyBanner.CurrentConfig.TextSize + 20;
 			
-			// TODO: continue tweaking this; want it to be centered by default
-			this.relativePosition = new Vector3 (0f, 0f, 0f);
+			float insetX = (viewWidth - this.width) / 2f;
+			this.relativePosition = new Vector3(insetX, 0f, 0f);
 			//this.CenterToParent();
 			//this.position = new Vector3 ((-viewWidth / 2) + banner_inset, (viewHeight / 2));
 			this.opacity = MyConfig.ConfigHolder.Config.BackgroundAlpha;
-			this.width = viewWidth;
+			this.width = viewWidth * 0.75f;
 			//this.width = (viewWidth * MyConfig.ConfigHolder.Config.BannerWidth) - (banner_inset * 2);
 			this.maximumSize = new Vector2(viewWidth, 25f);
 			this.minimumSize = new Vector2(27f, 25f);
