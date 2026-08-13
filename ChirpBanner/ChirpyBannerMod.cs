@@ -45,10 +45,6 @@ namespace ChirpBanner
 			group.AddSlider ("Transparency", 0.1f, 1, 0.10f, MyConfig.ConfigHolder.Config.BackgroundAlpha, CheckTransparency);
 			//group.AddSlider ("Banner Width", 0, 1, 0.10f, MyConfig.ConfigHolder.Config.BannerWidth, CheckWidth);
 
-			UIHelperBase colors = helper.AddGroup ("Colors must start with # and be in 8-digit hex form");
-			colors.AddTextfield ("Name Color", MyConfig.ConfigHolder.Config.NameColor, CheckChirpNameColor, CheckChirpNameColor);
-			colors.AddTextfield ("Chirp Color", MyConfig.ConfigHolder.Config.MessageColor, CheckChirpMsgColor, CheckChirpMsgColor);
-
 			UIHelperBase version = helper.AddGroup ("v2.6.0");
 
 			//group.AddSlider("My Slider", 0, 1, 0.01f, 0.5f, EventSlide);
@@ -120,42 +116,6 @@ namespace ChirpBanner
 			}
 		}
 		*/
-
-		public void CheckChirpNameColor (string c)
-		{
-			string fullc;
-			// Check if we forgot the # 
-			if (!c.StartsWith ("#")) {
-				fullc = "#" + c;
-			} else {
-				fullc = c;
-			}
-			// Check length, if it doesn't validate, set it to default
-			if (fullc.Length != 9) { // ie: #001122FF
-				MyConfig.ConfigHolder.Config.NameColor = "#31C3FFFF";
-			} else {
-				MyConfig.ConfigHolder.Config.NameColor = fullc;
-			}
-			MyConfig.SaveConfig ();
-		}
-
-		public void CheckChirpMsgColor (string c)
-		{
-			string fullc;
-			// Check if we forgot the # 
-			if (!c.StartsWith ("#")) {
-				fullc = "#" + c;
-			} else {
-				fullc = c;
-			}
-			// Check length, if it doesn't validate, set it to default
-			if (fullc.Length != 9) { // ie: #001122FF
-				MyConfig.ConfigHolder.Config.MessageColor = "#FFFFFFFF";
-			} else {
-				MyConfig.ConfigHolder.Config.MessageColor = fullc;
-			}
-			MyConfig.SaveConfig ();
-		}
 
 	}
 
@@ -365,34 +325,8 @@ namespace ChirpBanner
 				} catch (Exception ex) {
 					DebugOutputPanel.AddMessage (ColossalFramework.Plugins.PluginManager.MessageType.Message, string.Format ("ChirpBanner.OnNewMessage threw Exception: {0}", ex.Message));
 				}
-           
-				// use rich styled text
-				// Colossal markup uses sliiiiiightly different tags than unity.
-				// munge our config strings to fit
-				string nameColorTag = MyConfig.ConfigHolder.Config.NameColor;
-				string textColorTag = MyConfig.ConfigHolder.Config.MessageColor;
 
-				if (nameColorTag.Length == 9) { // ie: #001122FF
-					nameColorTag = nameColorTag.Substring (0, 7); // drop alpha bits
-				}
-
-				if (textColorTag.Length == 9) { // ie: #001122FF
-					textColorTag = textColorTag.Substring (0, 7); // drop alpha bits
-				}
-
-				// Check for CurrentConfig.ColorChirps
-				if (MyConfig.ConfigHolder.Config.ColorChirps) {
-					// If chirp is important, and ColorChirps is enabled, make the chirp name and message red.
-					if (important) {
-						//DebugOutputPanel.AddMessage (ColossalFramework.Plugins.PluginManager.MessageType.Message, string.Format ("Chirp is important: {0}", message.text));
-						//DebugOutputPanel.AddMessage (ColossalFramework.Plugins.PluginManager.MessageType.Message, string.Format ("CurrentConfig.NameColor: {0}", CurrentConfig.NameColor));
-						//DebugOutputPanel.AddMessage (ColossalFramework.Plugins.PluginManager.MessageType.Message, string.Format ("CurrentConfig.MessageColor: {0}", CurrentConfig.MessageColor));
-						textColorTag = "#FF0000";
-						nameColorTag = "#FF0000";
-					}
-				}
-
-				string str = String.Format ("<color={0}>{1}</color> : <color={2}>{3}</color>", nameColorTag, message.senderName, textColorTag, message.text);
+				string str = String.Format ("{0}:{1}", message.senderName, message.text);
 
 				// Check for CurrentConfig.FilterChirps
 				if (MyConfig.ConfigHolder.Config.FilterChirps) {
@@ -404,6 +338,7 @@ namespace ChirpBanner
 					// Otherwise, do something
 					if (important) {
 						//DebugOutputPanel.AddMessage (ColossalFramework.Plugins.PluginManager.MessageType.Message, string.Format ("Chirp is important: {0}", message.text));
+						theBannerPanel.color = new Color32(255, 0, 0, 255); 
 						theBannerPanel.CreateBannerLabel (str, message.senderID);
 					}
 				} else {
@@ -412,8 +347,7 @@ namespace ChirpBanner
             
 				//DebugOutputPanel.AddMessage (ColossalFramework.Plugins.PluginManager.MessageType.Message, string.Format ("textColorTag: {0}", textColorTag));
 				//DebugOutputPanel.AddMessage (ColossalFramework.Plugins.PluginManager.MessageType.Message, string.Format ("nameColorTag: {0}", nameColorTag));
-				//DebugOutputPanel.AddMessage(ColossalFramework.Plugins.PluginManager.MessageType.Message, string.Format("chirp! {0}", message.text));
-            
+				//DebugOutputPanel.AddMessage(ColossalFramework.Plugins.PluginManager.MessageType.Message, string.Format("chirp! {0}", message.text));            
 				
 				//MyIThreadingExtension.addTask2Main(() => { theBannerPanel.CreateBannerLabel(str, message.senderID); });
 				//MyIThreadingExtension.addTask2Main(() => { DebugOutputPanel.AddMessage(ColossalFramework.Plugins.PluginManager.MessageType.Message, string.Format("chirp! {0}", message.text)); });	
@@ -632,9 +566,6 @@ namespace ChirpBanner
 				public bool DestroyBuiltinChirper = true;
 				public int ScrollSpeed = 50;
 				public int TextSize = 20;
-					// pixels
-				public string MessageColor = "#FFFFFFFF";
-				public string NameColor = "#31C3FFFF";
 				public int version = 0;
 				public float BackgroundAlpha = 1.0f;
 				//public float BannerWidth = 1.0f;
