@@ -184,7 +184,7 @@ namespace ChirpBanner
 		{
 			if (BannerPanel.hasChirps) {
 				bool bPopIt = false;
-				float currentTrailingEdge = 20;
+				float currentTrailingEdge = MyConfig.ConfigHolder.Config.TrailingEdgeOffset;
 		        // Move calculations that don't change per-item out of the loop
 		        float moveAmount = simulationTimeDelta * MyConfig.ConfigHolder.Config.ScrollSpeed;
 
@@ -534,7 +534,7 @@ namespace ChirpBanner
 				ChirpLabel.textAlignment = UIHorizontalAlignment.Left;
 				ChirpLabel.relativePosition = new Vector3 ((this.width), 0);
 				//ChirpLabel.height = (float)ChirpyBanner.CurrentConfig.TextSize;
-				ChirpLabel.height = 30.0f;
+				ChirpLabel.height = MyConfig.ConfigHolder.Config.LabelHeight;
 				ChirpLabel.padding = new RectOffset (0, 0, 2, 2);
 
 				ChirpLabel.textScaleMode = UITextScaleMode.None;
@@ -567,17 +567,19 @@ namespace ChirpBanner
 		}
 	}
 
-	public class MyConfig
-	{
-				public bool DestroyBuiltinChirper = true;
-				public int ScrollSpeed = 50;
-				public int TextSize = 20;
-				public int version = 0;
-				public float BackgroundAlpha = 1.0f;
-				//public float BannerWidth = 1.0f;
-				public bool FilterChirps = false;
-				public bool ColorChirps = false;
-				public int currversion = 6;
+		public class MyConfig
+		{
+			public bool DestroyBuiltinChirper = true;
+			public int ScrollSpeed = 50;
+			public int TextSize = 20;
+			public int version = 0;
+			public float BackgroundAlpha = 1.0f;
+			public float TrailingEdgeOffset = 20f;
+			public float LabelHeight = 30.0f;
+			public bool FilterChirps = false;
+			public bool ColorChirps = false;
+			public int currversion = 6;
+
 
 		public static class ConfigHolder {
 				public static MyConfig Config = new MyConfig();
