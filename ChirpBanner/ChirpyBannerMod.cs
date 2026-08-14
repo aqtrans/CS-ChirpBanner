@@ -45,7 +45,7 @@ namespace ChirpBanner
 			group.AddSlider ("Transparency", 0.1f, 1, 0.10f, MyConfig.ConfigHolder.Config.BackgroundAlpha, CheckTransparency);
 			//group.AddSlider ("Banner Width", 0, 1, 0.10f, MyConfig.ConfigHolder.Config.BannerWidth, CheckWidth);
 
-			UIHelperBase version = helper.AddGroup ("v2.6.0");
+			UIHelperBase version = helper.AddGroup ("v2.6.1");
 
 			//group.AddSlider("My Slider", 0, 1, 0.01f, 0.5f, EventSlide);
 			//group.AddDropdown("My Dropdown", new string[] { "First Entry", "Second Entry", "Third Entry" }, -1, EventSel);
@@ -332,7 +332,7 @@ namespace ChirpBanner
 					DebugOutputPanel.AddMessage (ColossalFramework.Plugins.PluginManager.MessageType.Message, string.Format ("ChirpBanner.OnNewMessage threw Exception: {0}", ex.Message));
 				}
 
-				string str = String.Format ("{0}:{1}", message.senderName, message.text);
+				string str = String.Format ("{0}: {1}", message.senderName, message.text);
 
 				// Check for CurrentConfig.FilterChirps
 				if (MyConfig.ConfigHolder.Config.FilterChirps) {
