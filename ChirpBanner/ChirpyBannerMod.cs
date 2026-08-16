@@ -265,6 +265,7 @@ namespace ChirpBanner
 			}
 
 			CreateBannerUI ();
+			theBannerPanel.SendToBack();
 
 		}
 
@@ -345,10 +346,13 @@ namespace ChirpBanner
 					if (important) {
 						//DebugOutputPanel.AddMessage (ColossalFramework.Plugins.PluginManager.MessageType.Message, string.Format ("Chirp is important: {0}", message.text));
 						theBannerPanel.color = new Color32(255, 0, 0, 255); 
-						theBannerPanel.CreateBannerLabel (str, message.senderID);
+						
+						//theBannerPanel.CreateBannerLabel (str, message.senderID);
+						ChirpMoverThread.addTask2Main(() => { theBannerPanel.CreateBannerLabel (str, message.senderID); });
 					}
 				} else {
-					theBannerPanel.CreateBannerLabel (str, message.senderID);
+					//theBannerPanel.CreateBannerLabel (str, message.senderID);
+					ChirpMoverThread.addTask2Main(() => { theBannerPanel.CreateBannerLabel (str, message.senderID); });
 				}
             
 				//DebugOutputPanel.AddMessage (ColossalFramework.Plugins.PluginManager.MessageType.Message, string.Format ("textColorTag: {0}", textColorTag));
@@ -370,10 +374,12 @@ namespace ChirpBanner
 
 		public void OnUpdate ()
 		{
+			/*
 			if (theBannerPanel != null)
 			{
 				theBannerPanel.SendToBack();
-			}			
+			}
+			*/			
 		}
 
 		private void CreateBannerUI ()
@@ -474,6 +480,24 @@ namespace ChirpBanner
 			this.maximumSize = new Vector2(viewWidth, 25f);
 			this.minimumSize = new Vector2(27f, 25f);
 
+			UISprite leftCover = this.AddUIComponent<UISprite>();
+            leftCover.spriteName = "GenericPanel";
+			leftCover.color = new Color32 (0, 0, 0, 0xff);
+			//leftCover.AlignTo(this, UIAlignAnchor.BottomRight);
+            leftCover.relativePosition = new Vector3(0f, 0f);
+            leftCover.size = new Vector2(26f, 26f);
+			//leftCover.BringToFront();
+			leftCover.SendToBack();
+
+			UISprite rightCover = this.AddUIComponent<UISprite>();
+            rightCover.spriteName = "GenericPanel";
+			rightCover.color = new Color32 (0, 0, 0, 0xff);
+			rightCover.AlignTo(this, UIAlignAnchor.BottomRight);
+            rightCover.size = new Vector2(26f, 26f);
+			rightCover.relativePosition = new Vector3(rightCover.relativePosition.x - 26, rightCover.relativePosition.y - 26, 0);
+			//rightCover.BringToFront();
+			rightCover.SendToBack();
+
 			UISprite chirpSprite = this.AddUIComponent<UISprite>();
             chirpSprite.spriteName = "ChirperIcon";
             chirpSprite.relativePosition = new Vector3(-1f, -1f);
@@ -491,8 +515,9 @@ namespace ChirpBanner
 			UIResizeHandle rh = (UIResizeHandle)this.AddUIComponent (typeof(UIResizeHandle));
 			rh.backgroundSprite = "buttonresize";
 			rh.AlignTo(this, UIAlignAnchor.BottomRight);
-			rh.size = new Vector2(16f, 16f);
-			rh.relativePosition = new Vector3(rh.relativePosition.x - 16, rh.relativePosition.y - 16, 0);
+			rh.size = new Vector2(18f, 18f);
+			rh.relativePosition = new Vector3(rh.relativePosition.x - 20, rh.relativePosition.y - 20, 0);
+			rh.BringToFront();
 
 		}
 
