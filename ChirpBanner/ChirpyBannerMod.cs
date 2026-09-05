@@ -610,6 +610,14 @@ namespace ChirpBanner
 				public static MyConfig Config = new MyConfig();
 						
 		}
+
+		public static void ValidateConfig()
+		{
+			if (ConfigHolder.Config.ScrollSpeed < 50) ConfigHolder.Config.ScrollSpeed = 50;
+			if (ConfigHolder.Config.ScrollSpeed > 200) ConfigHolder.Config.ScrollSpeed = 200;
+			if (ConfigHolder.Config.TextSize < 4 || ConfigHolder.Config.TextSize > 100) ConfigHolder.Config.TextSize = 20;
+			if (ConfigHolder.Config.BackgroundAlpha < 0f || ConfigHolder.Config.BackgroundAlpha > 1f) ConfigHolder.Config.BackgroundAlpha = 1.0f;
+		}
 		/*
 		public static void Serialize (string filename, MyConfig config)
 		{
@@ -659,7 +667,7 @@ namespace ChirpBanner
 				}
 				catch (Exception e) {
 					//Debug.LogErrorFormat ("Unexpected {0} while saving options: {1}\n{2}", e.GetType ().Name, e.Message, e.StackTrace);
-					DebugOutputPanel.AddMessage(ColossalFramework.Plugins.PluginManager.MessageType.Message, string.Format("Error saving config: {0}", e.Message));
+					DebugOutputPanel.AddMessage(ColossalFramework.Plugins.PluginManager.MessageType.Message, string.Format("[ChirpBanner] Error saving config: {0}", e.Message));
 				}
 			
 		}
@@ -669,11 +677,29 @@ namespace ChirpBanner
 				try {
 					var xmlSerializer = new XmlSerializer(typeof(MyConfig));
 					using (var reader = new StreamReader("ChirpBannerConfig.xml")) {
-						ConfigHolder.Config = (MyConfig)xmlSerializer.Deserialize(reader);
+						//ConfigHolder.Config = (MyConfig)xmlSerializer.Deserialize(reader);
+						var loadedConfig = (MyConfig)xmlSerializer.Deserialize(reader);
+						if (loadedConfig != null)
+						{
+							ConfigHolder.Config = loadedConfig;
+							// Always validate after a successful load
+							ValidateConfig();
+						}
 					}
 				}
-				catch (FileNotFoundException) {
-					DebugOutputPanel.AddMessage(ColossalFramework.Plugins.PluginManager.MessageType.Message, string.Format("No config xml"));
+				catch (FileNotFoundException)
+				{
+					// This is a common scenario on first run. 
+					// No need to log as an error, just proceed with defaults.
+				}
+				catch (Exception e)
+				{
+					// If the file exists but is broken, we catch it and notify the user.
+					DebugOutputPanel.AddMessage(ColossalFramework.Plugins.PluginManager.MessageType.Message, 
+						$"[ChirpBanner] Config file is corrupted or inaccessible. Reverting to defaults. Error: {e.Message}");
+					
+					// Force a reset to defaults if the file is corrupted
+					ConfigHolder.Config = new MyConfig();
 				}
 	
 			/*
